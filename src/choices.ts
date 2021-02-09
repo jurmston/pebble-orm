@@ -15,7 +15,6 @@ interface ChoiceMethods<T extends string | number> {
   isValidChoice: (value: T) => boolean,
   name: string,
   description: string,
-  type: string,
 }
 
 export type Choices<T extends string | number> = ChoiceMethods<T>
@@ -24,14 +23,15 @@ export type Choices<T extends string | number> = ChoiceMethods<T>
 interface ChoicesOptions<T extends string | number> {
   items: ChoiceItem<T>[],
   name: string,
-  type: string,
   description?: string,
 }
 
+/**
+ * Creates a new Choices object.
+ */
 export function choicesFactory<T extends string | number>({
   items,
   name,
-  type = 'string',
   description = '',
 }: ChoicesOptions<T>): Choices<T> {
   const _choiceMap: Record<string, T> = {}
@@ -86,7 +86,6 @@ export function choicesFactory<T extends string | number>({
     isValidChoice,
     name,
     description,
-    type,
     ..._choiceMap,
   }
 }

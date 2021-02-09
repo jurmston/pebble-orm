@@ -65,7 +65,7 @@ describe('modelFactory', () => {
   })
 
   it('should deserialize from db correctly', () => {
-    const instance = TestModel.fromDb({
+    const instance = TestModel?.fromDb({
       name: 'test',
       test: undefined,  // undefined values should be removed.
     }, '123')
@@ -77,7 +77,7 @@ describe('modelFactory', () => {
   })
 
   it('should serialize to the db correctly', () => {
-    const record = TestModel.toDb({
+    const record = TestModel?.toDb({
       name: 'test',
       id: '123',
     })
@@ -88,7 +88,7 @@ describe('modelFactory', () => {
   })
 
   it('should deserialize from the api correctly', () => {
-    const record = TestModel.fromApi({
+    const record = TestModel?.fromApi({
       name: 'test',
       id: '123',
       test: undefined,
@@ -101,7 +101,7 @@ describe('modelFactory', () => {
   })
 
   it('should serialize to the api correctly', () => {
-    const record = TestModel.toApi({
+    const record = TestModel?.toApi({
       name: 'test',
       id: '123',
     })
@@ -113,7 +113,7 @@ describe('modelFactory', () => {
   })
 
   it('should create new instances correctly', () => {
-    const instance = TestModel.create({
+    const instance = TestModel?.create({
       name: 'test',
       id: '123',
     })
@@ -126,7 +126,7 @@ describe('modelFactory', () => {
 
   it('should throw when validating an instance with extra field', () => {
     expect(() => {
-      TestModel.validate({
+      TestModel?.validate({
         id: '123',
         name: 'test',
         extra: 'stuff',
@@ -136,7 +136,7 @@ describe('modelFactory', () => {
 
   it('should throw when validating an instance missing required field', () => {
     expect(() => {
-      TestModel.validate({
+      TestModel?.validate({
         id: '123',
       })
     }).toThrow()
@@ -144,7 +144,7 @@ describe('modelFactory', () => {
 
   it('should throw when validating an instance has invalid field type', () => {
     expect(() => {
-      TestModel.validate({
+      TestModel?.validate({
         id: '123',
         name: 'test',
         test: 123,
