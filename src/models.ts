@@ -1,4 +1,4 @@
-import { ModelError, ValidationError } from './errors'
+import { ValidationError } from './errors'
 
 export type ModelInstance = Record<string, any>
 export type DbRecord = Record<string, any>
@@ -34,21 +34,13 @@ export function modelFactory({
   name = '',
   fields = [],
   description = '',
-  idFieldName = 'id',
+  idFieldName,
 }: ModelOptions): Model {
   const _fields: Record<string, any> = {}
 
   fields.forEach(field => {
     _fields[field.name] = field
   })
-
-  if (!_fields[idFieldName]) {
-    throw new ModelError('Missing id field')
-  }
-
-  if (!_fields[idFieldName].isRequired) {
-    throw new ModelError('Id field `isRequired` must be `true`')
-  }
 
   /**
    * Retrievies a list of the model's field objects.
@@ -115,7 +107,7 @@ export function modelFactory({
    * @param idValue
    */
   function fromDb(record: DbRecord, idValue: any = null): ModelInstance {
-    if (idValue !== null) {
+    if (idFieldName && idValue !== null) {
       record[idFieldName] = idValue
     }
 
@@ -139,10 +131,14 @@ export function modelFactory({
    * @param instance
    */
   function toDb(instance: ModelInstance): DbRecord {
+    const valuesToSerialize = { ...instance }
+    
     // Remove the id field, if it's present.
-    const { [idFieldName]: _id, ...rest } = instance
+    if (idFieldName) {
+      delete valuesToSerialize[idFieldName]
+    }
 
-    return serializeToDb(rest)
+    return serializeToDb(valuesToSerialize)
   }
 
 

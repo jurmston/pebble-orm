@@ -7,6 +7,7 @@ let TestModel: Model | null = null
 beforeAll(() => {
   TestModel = modelFactory({
     name: 'Test',
+    idFieldName: 'id',
     fields: [
       stringFieldFactory({
         name: 'id',
@@ -31,6 +32,7 @@ describe('modelFactory', () => {
   it('should not explode', () => {
     const Test = modelFactory({
       name: 'test',
+      idFieldName: 'id',
       fields: [
         stringFieldFactory({
           name: 'id',
@@ -40,28 +42,6 @@ describe('modelFactory', () => {
     })
 
     expect(Test.name).toBe('test')
-  })
-
-  it('should throw when there is no id field', () => {
-    expect(() => {
-      modelFactory({
-        name: 'test',
-        fields: [],
-      })
-    }).toThrow()
-  })
-
-  it('should throw when the id field is not required', () => {
-    expect(() => {
-      modelFactory({
-        name: 'test',
-        fields: [
-          stringFieldFactory({
-            name: 'id',
-          })
-        ],
-      })
-    }).toThrow()
   })
 
   it('should deserialize from db correctly', () => {

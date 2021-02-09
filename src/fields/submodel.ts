@@ -2,13 +2,13 @@ import { FieldError, ValidationError } from '../errors'
 import { Field, FieldOptions } from './base'
 import {
   Model,
-  SerializedModelInstance,
+  ApiPayload,
   DbRecord,
   ModelInstance,
 } from '../models'
 
 
-interface Submodel extends Field<DbRecord, ModelInstance, SerializedModelInstance> {}
+interface Submodel extends Field<DbRecord, ModelInstance, ApiPayload> {}
 interface SubmodelOptions extends FieldOptions<ModelInstance> {
   model: Model,
 }
@@ -43,7 +43,7 @@ function submodelFieldFactory(options: SubmodelOptions): Submodel {
       throw new ValidationError(`Field "${options.name}" must be a map`)
     }
 
-    options.model?.validate(value, false)
+    options.model?.validate(value)
   }
 
   function fromDb(value: DbRecord | null | undefined): ModelInstance | undefined  {
@@ -51,7 +51,7 @@ function submodelFieldFactory(options: SubmodelOptions): Submodel {
       return undefined
     }
 
-    return options.model!.fromDb(value)
+    return options.model!.fromDb(value, undefined)
   }
 
   function toDb(value: ModelInstance | undefined): DbRecord | undefined {
@@ -59,18 +59,18 @@ function submodelFieldFactory(options: SubmodelOptions): Submodel {
       return undefined
     }
 
-    return options.model!.toDb(value, false)
+    return options.model!.toDb(value)
   }
 
-  function fromApi(value: SerializedModelInstance | null | undefined): ModelInstance | undefined {
+  function fromApi(value: ApiPayload | null | undefined): ModelInstance | undefined {
     if (value === undefined || value === null) {
       return undefined
     }
 
-    return options.model!.fromApi(value, false)
+    return options.model!.fromApi(value)
   }
 
-  function toApi(value: ModelInstance | undefined): SerializedModelInstance | undefined {
+  function toApi(value: ModelInstance | undefined): ApiPayload | undefined {
     if (value === undefined) {
       return undefined
     }
