@@ -7,7 +7,6 @@ let TestModel: Model | null = null
 beforeAll(() => {
   TestModel = modelFactory({
     name: 'Test',
-    idFieldName: 'id',
     fields: [
       stringFieldFactory({
         name: 'id',
@@ -32,7 +31,6 @@ describe('modelFactory', () => {
   it('should not explode', () => {
     const Test = modelFactory({
       name: 'test',
-      idFieldName: 'id',
       fields: [
         stringFieldFactory({
           name: 'id',

@@ -34,7 +34,7 @@ export function modelFactory({
   name = '',
   fields = [],
   description = '',
-  idFieldName,
+  idFieldName = 'id',
 }: ModelOptions): Model {
   const _fields: Record<string, any> = {}
 
