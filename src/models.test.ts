@@ -43,10 +43,10 @@ describe('modelFactory', () => {
   })
 
   it('should deserialize from db correctly', () => {
-    const instance = TestModel?.fromDb({
+    const instance = TestModel?.fromDb('123', {
       name: 'test',
       test: undefined,  // undefined values should be removed.
-    }, '123')
+    })
 
     expect(instance).toEqual({
       name: 'test',

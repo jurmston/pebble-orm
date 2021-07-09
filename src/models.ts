@@ -19,7 +19,7 @@ export interface Model {
   deserializeFromDb: (record: Partial<DbRecord>) => Partial<ModelInstance>,
   extractFields: (instance: ModelInstance, fields: string[]) => Partial<ModelInstance>,
   fromApi: (data: ApiPayload) => ModelInstance,
-  fromDb: (record: DbRecord, idValue: any) => ModelInstance,
+  fromDb: (idValue: any, record: DbRecord) => ModelInstance,
   getField: (field: string) => any,
   getFields: () => any[],
   name: string,
@@ -106,7 +106,7 @@ export function modelFactory({
    * @param record The data object from the firestore document data.
    * @param idValue
    */
-  function fromDb(record: DbRecord, idValue: any = null): ModelInstance {
+  function fromDb(idValue: any = null, record: DbRecord): ModelInstance {
     if (idFieldName && idValue !== null) {
       record[idFieldName] = idValue
     }
@@ -132,7 +132,7 @@ export function modelFactory({
    */
   function toDb(instance: ModelInstance): DbRecord {
     const valuesToSerialize = { ...instance }
-    
+
     // Remove the id field, if it's present.
     if (idFieldName) {
       delete valuesToSerialize[idFieldName]

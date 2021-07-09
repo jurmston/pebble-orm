@@ -51,7 +51,7 @@ function submodelFieldFactory(options: SubmodelOptions): Submodel {
       return undefined
     }
 
-    return options.model!.fromDb(value, undefined)
+    return options.model!.fromDb(undefined, value)
   }
 
   function toDb(value: ModelInstance | undefined): DbRecord | undefined {
