@@ -8,11 +8,13 @@ export type ApiPayload = Record<string, any>
 export interface ModelOptions {
   name: string,
   fields: any[],
+  collection: string,
   description?: string,
   idFieldName?: string,
 }
 
 export interface Model {
+  collection: string,
   create: (record: DbRecord) => ModelInstance,
   description: string,
   deserializeFromApi: (payload: Partial<ApiPayload>) => Partial<ModelInstance>,
@@ -32,6 +34,7 @@ export interface Model {
 
 export function modelFactory({
   name = '',
+  collection = '',
   fields = [],
   description = '',
   idFieldName = 'id',
@@ -228,6 +231,7 @@ export function modelFactory({
 
   return {
     create,
+    collection,
     description,
     deserializeFromApi,
     deserializeFromDb,
