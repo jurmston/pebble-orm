@@ -7,16 +7,16 @@ let TestModel: Model | null = null
 beforeAll(() => {
   TestModel = modelFactory({
     name: 'Test',
+    collection: 'tests',
     fields: [
       stringFieldFactory({
-        name: 'id',
+        name: 'name',
         isRequired: true,
         defaultValue: '',
       }),
 
       stringFieldFactory({
-        name: 'name',
-        isRequired: true,
+        name: 'testDefault',
         defaultValue: '',
       }),
 
@@ -31,15 +31,26 @@ describe('modelFactory', () => {
   it('should not explode', () => {
     const Test = modelFactory({
       name: 'test',
+      collection: 'test',
       fields: [
         stringFieldFactory({
-          name: 'id',
+          name: 'name',
           isRequired: true,
         })
       ],
     })
 
     expect(Test.name).toBe('test')
+  })
+
+  it('should create an instance correctly', () => {
+    const instance = TestModel?.create({ id: '123', name: 'test' })
+
+    expect(instance).toEqual({
+      id: '123',
+      name: 'test',
+      testDefault: '',
+    })
   })
 
   it('should deserialize from db correctly', () => {
@@ -50,6 +61,7 @@ describe('modelFactory', () => {
 
     expect(instance).toEqual({
       name: 'test',
+      testDefault: '',
       id: '123',
     })
   })
@@ -75,6 +87,7 @@ describe('modelFactory', () => {
     expect(record).toEqual({
       name: 'test',
       id: '123',
+      testDefault: '',
     })
   })
 
@@ -93,12 +106,11 @@ describe('modelFactory', () => {
   it('should create new instances correctly', () => {
     const instance = TestModel?.create({
       name: 'test',
-      id: '123',
     })
 
     expect(instance).toEqual({
       name: 'test',
-      id: '123',
+      testDefault: '',
     })
   })
 
@@ -124,6 +136,31 @@ describe('modelFactory', () => {
     expect(() => {
       TestModel?.validate({
         id: '123',
+        name: 'test',
+        test: 123,
+      })
+    }).toThrow()
+  })
+
+  it('should throw when the id field is included in fields', () => {
+    expect(() => {
+      modelFactory({
+        name: 'test',
+        collection: 'test',
+        fields: [
+          stringFieldFactory({
+            name: 'id',
+            isRequired: true,
+          })
+        ],
+      })
+    }).toThrow()
+  })
+
+  it('should throw when a non-string is passed as an ID', () => {
+    expect(() => {
+      TestModel?.validate({
+        id: 34,
         name: 'test',
         test: 123,
       })

@@ -1,4 +1,5 @@
 import { ValidationError } from './errors'
+import { stringFieldFactory } from './fields/string'
 
 export type ModelInstance = Record<string, any>
 export type DbRecord = Record<string, any>
@@ -21,7 +22,7 @@ export interface Model {
   deserializeFromDb: (record: Partial<DbRecord>) => Partial<ModelInstance>,
   extractFields: (instance: ModelInstance, fields: string[]) => Partial<ModelInstance>,
   fromApi: (data: ApiPayload) => ModelInstance,
-  fromDb: (idValue: any, record: DbRecord) => ModelInstance,
+  fromDb: (idValue: string, record: DbRecord) => ModelInstance,
   getField: (field: string) => any,
   getFields: () => any[],
   name: string,
@@ -42,7 +43,16 @@ export function modelFactory({
   const _fields: Record<string, any> = {}
 
   fields.forEach(field => {
+    if (field.name === idFieldName) {
+      throw new Error(`Id field: ${idFieldName} is reservered cannot be included in fields.`)
+    }
+
     _fields[field.name] = field
+  })
+
+  // Create the id field and add it to the model field set.
+  _fields[idFieldName] = stringFieldFactory({
+    name: idFieldName,
   })
 
   /**
@@ -109,8 +119,8 @@ export function modelFactory({
    * @param record The data object from the firestore document data.
    * @param idValue
    */
-  function fromDb(idValue: any = null, record: DbRecord): ModelInstance {
-    if (idFieldName && idValue !== null) {
+  function fromDb(idValue: string = '', record: DbRecord): ModelInstance {
+    if (idValue) {
       record[idFieldName] = idValue
     }
 
@@ -137,9 +147,7 @@ export function modelFactory({
     const valuesToSerialize = { ...instance }
 
     // Remove the id field, if it's present.
-    if (idFieldName) {
-      delete valuesToSerialize[idFieldName]
-    }
+    delete valuesToSerialize[idFieldName]
 
     return serializeToDb(valuesToSerialize)
   }
@@ -208,7 +216,7 @@ export function modelFactory({
 
       // When values are undefined we want to exclude them from the payload.
       if (value !== undefined && value !== null) {
-        result[field.name]
+        result[field.name] = value
       }
 
       return result
