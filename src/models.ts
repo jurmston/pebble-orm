@@ -16,7 +16,7 @@ export interface ModelOptions {
 
 export interface Model {
   collection: string,
-  create: (record: DbRecord) => ModelInstance,
+  create: (initialValues?: Partial<ModelInstance>) => ModelInstance,
   description: string,
   deserializeFromApi: (payload: Partial<ApiPayload>) => Partial<ModelInstance>,
   deserializeFromDb: (record: Partial<DbRecord>) => Partial<ModelInstance>,

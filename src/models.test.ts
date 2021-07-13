@@ -167,4 +167,33 @@ describe('modelFactory', () => {
     }).toThrow()
   })
 
+  it('should create with empty args correctly', () => {
+    const Test = modelFactory({
+      name: 'test',
+      collection: 'test',
+      fields: [
+        stringFieldFactory({
+          name: 'withDefault',
+          defaultValue: 'test',
+        }),
+
+        stringFieldFactory({
+          name: 'withEmptyDefault',
+          defaultValue: '',
+        }),
+
+        stringFieldFactory({
+          name: 'withoutDefault',
+        })
+      ],
+    })
+
+    const instance = Test.create()
+
+    expect(instance).toEqual({
+      withDefault: 'test',
+      withEmptyDefault: '',
+    })
+  })
+
 })
