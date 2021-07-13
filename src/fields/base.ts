@@ -42,11 +42,7 @@ function baseFieldFactory<StorageType, FieldType, ApiType>({
       return (defaultValue as (() => FieldType))()
     }
 
-    if (defaultValue) {
-      return defaultValue
-    }
-
-    return undefined
+    return defaultValue ?? undefined
   }
 
   /**
