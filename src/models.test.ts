@@ -1,5 +1,6 @@
 import { modelFactory, Model } from './models'
 import { stringFieldFactory } from './fields/string'
+import { numberFieldFactory } from './fields/number'
 
 
 let TestModel: Model | null = null
@@ -193,6 +194,43 @@ describe('modelFactory', () => {
     expect(instance).toEqual({
       withDefault: 'test',
       withEmptyDefault: '',
+    })
+  })
+
+  it('should render a complicated model', () => {
+    const ResourceModel = modelFactory({
+      name: 'ResourceModel',
+      collection: 'resources',
+      fields: [
+        stringFieldFactory({
+          name: 'name',
+          defaultValue: '',
+        }),
+
+        numberFieldFactory({
+          name: 'numAccounts',
+          defaultValue: 0,
+        }),
+
+        stringFieldFactory({
+          name: 'domain',
+          defaultValue: 'test',
+        }),
+
+        stringFieldFactory({
+          name: 'notes',
+          defaultValue: '',
+        }),
+      ],
+    })
+
+    const resource = ResourceModel.create()
+
+    expect(resource).toEqual({
+      name: '',
+      numAccounts: 0,
+      domain: 'test',
+      notes: '',
     })
   })
 
