@@ -22,7 +22,11 @@ function submodelFieldFactory(options: SubmodelOptions): Submodel {
   }
 
   if (!options.model) {
-    throw new FieldError('Map field must have a model.')
+    throw new FieldError('Submodel field must have a model.')
+  }
+
+  if (!options.model.isSubmodel) {
+    throw new FieldError('Submodel must have isSubmodel = true')
   }
 
   function getDefault(): ModelInstance | undefined {
@@ -51,7 +55,7 @@ function submodelFieldFactory(options: SubmodelOptions): Submodel {
       return undefined
     }
 
-    return options.model!.fromDb(undefined, value)
+    return options.model!.fromDb('', value)
   }
 
   function toDb(value: ModelInstance | undefined): DbRecord | undefined {

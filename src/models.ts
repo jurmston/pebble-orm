@@ -12,6 +12,7 @@ export interface ModelOptions {
   collection: string,
   description?: string,
   idFieldName?: string,
+  isSubmodel?: boolean,
 }
 
 export interface Model {
@@ -31,6 +32,7 @@ export interface Model {
   toApi: (instance: ModelInstance) => ApiPayload,
   toDb: (instance: ModelInstance) => DbRecord,
   validate: (instance: ModelInstance) => void,
+  isSubmodel: boolean,
 }
 
 export function modelFactory({
@@ -39,11 +41,12 @@ export function modelFactory({
   fields = [],
   description = '',
   idFieldName = 'id',
+  isSubmodel = false,
 }: ModelOptions): Model {
   const _fields: Record<string, any> = {}
 
   fields.forEach(field => {
-    if (field.name === idFieldName) {
+    if (!isSubmodel && field.name === idFieldName) {
       throw new Error(`Id field: ${idFieldName} is reservered cannot be included in fields.`)
     }
 
@@ -51,9 +54,11 @@ export function modelFactory({
   })
 
   // Create the id field and add it to the model field set.
-  _fields[idFieldName] = stringFieldFactory({
-    name: idFieldName,
-  })
+  if (!isSubmodel) {
+    _fields[idFieldName] = stringFieldFactory({
+      name: idFieldName,
+    })
+  }
 
   /**
    * Retrievies a list of the model's field objects.
@@ -120,7 +125,7 @@ export function modelFactory({
    * @param idValue
    */
   function fromDb(idValue: string = '', record: DbRecord): ModelInstance {
-    if (idValue) {
+    if (!isSubmodel && idValue) {
       record[idFieldName] = idValue
     }
 
@@ -147,7 +152,9 @@ export function modelFactory({
     const valuesToSerialize = { ...instance }
 
     // Remove the id field, if it's present.
-    delete valuesToSerialize[idFieldName]
+    if (!isSubmodel) {
+      delete valuesToSerialize[idFieldName]
+    }
 
     return serializeToDb(valuesToSerialize)
   }
@@ -266,5 +273,6 @@ export function modelFactory({
     toApi,
     toDb,
     validate,
+    isSubmodel,
   }
 }
