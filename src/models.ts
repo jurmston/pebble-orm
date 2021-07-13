@@ -249,7 +249,7 @@ export function modelFactory({
 
       // When values are undefined we want to exclude them from the payload.
       if (value !== undefined && value !== null) {
-        result[field.name]
+        result[field.name] = value
       }
 
       return result
