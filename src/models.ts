@@ -204,7 +204,13 @@ export function modelFactory({
    */
   function create(initialValues: Partial<ModelInstance> = {}): ModelInstance {
     const instance = Object.values(_fields).reduce((result, field) => {
-      result[field.name] = initialValues[field.name] ?? field.getDefault()
+      const value = initialValues[field.name] ?? field.getDefault()
+
+      // When values are undefined we want to exclude them from the payload.
+      if (value !== undefined && value !== null) {
+        result[field.name]
+      }
+
       return result
     }, {})
 
@@ -224,7 +230,13 @@ export function modelFactory({
         throw new Error(`Invalid field name: ${fieldName}`)
       }
 
-      result[field.name] = instance[field.name] ?? field.getDefault()
+      const value = instance[field.name] ?? field.getDefault()
+
+      // When values are undefined we want to exclude them from the payload.
+      if (value !== undefined && value !== null) {
+        result[field.name]
+      }
+
       return result
     }, {})
   }
