@@ -25,7 +25,9 @@ function dateTimeFieldFactory(options: DateTimeFieldOptions): DateTimeField {
       return getDefault()
     }
 
-    return DateTime.fromMillis(value)
+    // Truncate the number value because the fromMillis only works with integer
+    // values.
+    return DateTime.fromMillis(Math.trunc(value))
   }
 
   function toDb(value: DateTime | undefined): number | undefined {
@@ -41,7 +43,7 @@ function dateTimeFieldFactory(options: DateTimeFieldOptions): DateTimeField {
       return getDefault()
     }
 
-    return DateTime.fromMillis(value)
+    return DateTime.fromMillis(Math.trunc(value))
   }
 
   function toApi(value: DateTime | undefined): number | undefined {
